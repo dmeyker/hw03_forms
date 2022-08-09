@@ -4,6 +4,7 @@ from django.core.paginator import Paginator
 from .forms import PostForm
 from django.contrib.auth.decorators import login_required
 
+
 def index(request):
     post_list = Post.objects.all().order_by('-pub_date')
     paginator = Paginator(post_list, 10)
@@ -31,9 +32,11 @@ def group_posts(request, slug):
     }
     return render(request, 'posts/group_list.html', context)
 
+
 def profile(request, username):
     author = get_object_or_404(User, username=username)
-    author_post_list = author.posts.select_related('author').order_by('-pub_date')
+    author_post_list = author.posts.select_related('author') \
+        .order_by('-pub_date')
     paginator = Paginator(author_post_list, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -56,7 +59,7 @@ def post_detail(request, post_id):
         'title': (f'Пост {post.text[:30]}'),
         'author_post_count': author_post_count,
     }
-    return render(request, 'posts/post_detail.html', context) 
+    return render(request, 'posts/post_detail.html', context)
 
 
 @login_required
@@ -86,6 +89,5 @@ def post_edit(request, post_id):
         'is_edit': True,
         'form': form,
         'post_id': post_id
-        }
+    }
     return render(request, 'posts/create_post.html', context)
-
