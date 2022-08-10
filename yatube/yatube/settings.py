@@ -126,9 +126,12 @@ USE_TZ = True
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_URL = '/static/'
 
+POSTS_PER_PAGE: int = 10
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # yatube/settings.py
+
 
 LOGIN_URL = 'users:login'
 LOGIN_REDIRECT_URL = 'posts:index'
