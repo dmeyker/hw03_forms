@@ -16,7 +16,7 @@ def index(request):
 
 def group_posts(request, slug):
     group = get_object_or_404(Group, slug=slug)
-    posts = Post.objects.filter(group=group).select_related('group',)
+    posts = group.posts.select_related("author", "group")
     page_obj = paginate_page(request, posts)
     context = {
         'group': group,
@@ -59,13 +59,11 @@ def post_create(request):
 @login_required
 def post_edit(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
+
     form = PostForm(request.POST or None, instance=post)
-    if post.author != request.user:
-        return redirect('posts:post_detail', post_id)
-    if request.method == 'POST':
-        if form.is_valid():
-            post.save()
-            return redirect('posts:post_detail', post_id=post.id)
+    if form.is_valid():
+        form.save()
+        return redirect("posts:post_detail", post_id)
     context = {
         'is_edit': True,
         'form': form,
